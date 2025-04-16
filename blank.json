@@ -1,0 +1,1007 @@
+{
+    "path23": {
+        "name": "TreedaleN",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path31": {
+        "name": "MNW4",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path24": {
+        "name": "TreedaleS",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path25": {
+        "name": "AcidLakeRiverdale",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path27": {
+        "name": "WestMyapolis",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path26": {
+        "name": "ParliamentHill",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path28": {
+        "name": "MNW1",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path37": {
+        "name": "MSW2",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path34": {
+        "name": "MSE2",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path33": {
+        "name": "MNE3",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path32": {
+        "name": "MNE1",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path29": {
+        "name": "MNW2",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path30": {
+        "name": "MNW3",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path38": {
+        "name": "MSW1",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path40": {
+        "name": "MSW3",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path36": {
+        "name": "MNE2",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path35": {
+        "name": "MSE1",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path39": {
+        "name": "MSW4",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path6": {
+        "name": "GoldMesa",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path7": {
+        "name": "Airport",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path8": {
+        "name": "DactylBeachS",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path9": {
+        "name": "DactylBeachN",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path10": {
+        "name": "PeninsulaBasin",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path4": {
+        "name": "Snowdonia",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path5": {
+        "name": "ElizabethIsland",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path21": {
+        "name": "IdsteinBeach",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path16": {
+        "name": "YuppingtonN",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path19": {
+        "name": "YuppingtonS",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path20": {
+        "name": "PineValley",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path77": {
+        "name": "GreatDesert",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path220": {
+        "name": "PortSepulveda",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path66": {
+        "name": "EastGibson",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path72": {
+        "name": "GibsonN1",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path74": {
+        "name": "GibsonN2",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path76": {
+        "name": "GibsonS1",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path75": {
+        "name": "GibsonW",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path71": {
+        "name": "GibsonS2",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path65": {
+        "name": "SilverbirchWoods",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path64": {
+        "name": "PaintedCoast",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path63": {
+        "name": "PaintedBeach",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path54": {
+        "name": "Sepaudia",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path59": {
+        "name": "CentralLakeS",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path58": {
+        "name": "CentralLakeE",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path56": {
+        "name": "CentralLakeC",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path55": {
+        "name": "CentralLakeW",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path272": {
+        "name": "Northfjord",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path60": {
+        "name": "Westfjord",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path61": {
+        "name": "CentraliaW",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path62": {
+        "name": "CentraliaE",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path279": {
+        "name": "Asbestos",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path280": {
+        "name": "WolfsburgN",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path82": {
+        "name": "WolfsburgE",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path81": {
+        "name": "WolfsburgC",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path78": {
+        "name": "Marais",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path48": {
+        "name": "SouthportE",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path49": {
+        "name": "SouthportC3",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path47": {
+        "name": "SouthportN",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path53": {
+        "name": "SouthportC2",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path50": {
+        "name": "SouthportW",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path52": {
+        "name": "SouthportC1",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path51": {
+        "name": "SouthportS",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path43": {
+        "name": "RoyalLakes",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path42": {
+        "name": "LakeHanes",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path41": {
+        "name": "KepriPalms",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path46": {
+        "name": "SunnySandsW",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path44": {
+        "name": "SunnySandsE",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path45": {
+        "name": "SunnySandsN",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 0,
+            "conservative": 0,
+            "liberal": 0,
+            "others": 100
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    }
+}

@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Election Map</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            gap: 20px;
+        }
+        #svg-container {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        #info-panel {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        svg {
+            width: 100%;
+            height: 500px;
+            background-color: #f5f5f5;
+        }
+        .region {
+            cursor: pointer;
+            transition: all 0.5s ease;
+            stroke: #fff;
+            stroke-width: 1.5;
+        }
+        form {
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .color-input {
+            height: 40px;
+            cursor: pointer;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        h2, h3 {
+            color: #333;
+        }
+        .region-stats {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .status-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .election-summary {
+            margin: 20px 0;
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .candidate-bar {
+            display: flex;
+            height: 30px;
+            width: 100%;
+            margin: 10px 0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .party-socialist {
+            background-color: #0275d8;
+        }
+        .party-conservative {
+            background-color: #d9534f;
+        }
+        .party-liberal {
+            background-color: #5bc0de;
+        }
+        .party-others {
+            background-color: #5cb85c;
+        }
+        .party-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .party-color {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Election Map</h1>
+    <p>Click on any state to view its election data and update results</p>
+    
+    <div class="election-summary" id="election-summary">
+        <!-- Will be populated by JavaScript -->
+    </div>
+    
+    <div class="container">
+        <div id="svg-container"></div>
+        <div id="info-panel">
+            <h2>Election Results</h2>
+            <p>Select a state on the map to view and update its election data.</p>
+        </div>
+    </div>
+    <div style="margin-top: 20px;">
+        <label for="upload-json">Load Election JSON:</label>
+        <input type="file" id="upload-json" accept=".json">
+        <button onclick="downloadElectionDatabase()">Download Current Database</button>
+    </div>
+    <script>
+        // Election database with JSON data
+        
+        let electionDatabase = {
+            "path23": {
+        "name": "TreedaleN",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path31": {
+        "name": "MNW4",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path24": {
+        "name": "TreedaleS",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path25": {
+        "name": "AcidLakeRiverdale",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path27": {
+        "name": "WestMyapolis",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path26": {
+        "name": "ParliamentHill",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path28": {
+        "name": "MNW1",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path37": {
+        "name": "MSW2",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path34": {
+        "name": "MSE2",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path33": {
+        "name": "MNE3",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path32": {
+        "name": "MNE1",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path29": {
+        "name": "MNW2",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path30": {
+        "name": "MNW3",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path38": {
+        "name": "MSW1",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path40": {
+        "name": "MSW3",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path36": {
+        "name": "MNE2",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path35": {
+        "name": "MSE1",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path39": {
+        "name": "MSW4",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path6": {
+        "name": "GoldMesa",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 6800,
+        "lastUpdated": "2025-04-10"
+    },
+    "path7": {
+        "name": "Airport",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 6800,
+        "lastUpdated": "2025-04-10"
+    },
+    "path8": {
+        "name": "DactylBeachS",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 6800,
+        "lastUpdated": "2025-04-10"
+    },
+    "path9": {
+        "name": "DactylBeachN",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 6800,
+        "lastUpdated": "2025-04-10"
+    },
+    "path10": {
+        "name": "PeninsulaBasin",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 10.5,
+            "conservative": 66.0,
+            "liberal": 14.7,
+            "others": 8.8
+        },
+        "winner": "conservative",
+        "turnout": 70,
+        "reporting": 100,
+        "voters": 6800,
+        "lastUpdated": "2025-04-10"
+    },
+    "path4": {
+        "name": "Snowdonia",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 64.2,
+            "conservative": 20.5,
+            "liberal": 10.5,
+            "others": 4.8
+        },
+        "winner": "socialist",
+        "turnout": 70,
+        "reporting": 100,
+        "voters": 6800,
+        "lastUpdated": "2025-04-10"
+    },
+    "path5": {
+        "name": "ElizabethIsland",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 7.5,
+            "conservative": 69.5,
+            "liberal": 14.8,
+            "others": 8.2
+        },
+        "winner": "conservative",
+        "turnout": 70,
+        "reporting": 100,
+        "voters": 6800,
+        "lastUpdated": "2025-04-10"
+    },
+    "path21": {
+        "name": "IdsteinBeach",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path16": {
+        "name": "YuppingtonN",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path19": {
+        "name": "YuppingtonS",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path20": {
+        "name": "PineValley",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7400,
+        "lastUpdated": "2025-04-10"
+    },
+    "path77": {
+        "name": "GreatDesert",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 5000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path220": {
+        "name": "PortSepulveda",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 5000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path66": {
+        "name": "EastGibson",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7180,
+        "lastUpdated": "2025-04-10"
+    },
+    "path72": {
+        "name": "GibsonN1",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7180,
+        "lastUpdated": "2025-04-10"
+    },
+    "path74": {
+        "name": "GibsonN2",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7180,
+        "lastUpdated": "2025-04-10"
+    },
+    "path76": {
+        "name": "GibsonS1",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7180,
+        "lastUpdated": "2025-04-10"
+    },
+    "path75": {
+        "name": "GibsonW",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7180,
+        "lastUpdated": "2025-04-10"
+    },
+    "path71": {
+        "name": "GibsonS2",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7180,
+        "lastUpdated": "2025-04-10"
+    },
+    "path65": {
+        "name": "SilverbirchWoods",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7180,
+        "lastUpdated": "2025-04-10"
+    },
+    "path64": {
+        "name": "PaintedCoast",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7180,
+        "lastUpdated": "2025-04-10"
+    },
+    "path63": {
+        "name": "PaintedBeach",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7180,
+        "lastUpdated": "2025-04-10"
+    },
+    "path54": {
+        "name": "Sepaudia",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 6270,
+        "lastUpdated": "2025-04-10"
+    },
+    "path59": {
+        "name": "CentralLakeS",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 6270,
+        "lastUpdated": "2025-04-10"
+    },
+    "path58": {
+        "name": "CentralLakeE",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 6270,
+        "lastUpdated": "2025-04-10"
+    },
+    "path56": {
+        "name": "CentralLakeC",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 6270,
+        "lastUpdated": "2025-04-10"
+    },
+    "path55": {
+        "name": "CentralLakeW",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 6270,
+        "lastUpdated": "2025-04-10"
+    },
+    "path272": {
+        "name": "Northfjord",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 6270,
+        "lastUpdated": "2025-04-10"
+    },
+    "path60": {
+        "name": "Westfjord",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 6270,
+        "lastUpdated": "2025-04-10"
+    },
+    "path61": {
+        "name": "CentraliaW",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 6270,
+        "lastUpdated": "2025-04-10"
+    },
+    "path62": {
+        "name": "CentraliaE",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 6270,
+        "lastUpdated": "2025-04-10"
+    },
+    "path279": {
+        "name": "Asbestos",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 6270,
+        "lastUpdated": "2025-04-10"
+    },
+    "path280": {
+        "name": "WolfsburgN",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path82": {
+        "name": "WolfsburgE",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path81": {
+        "name": "WolfsburgC",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path78": {
+        "name": "Marais",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path48": {
+        "name": "SouthportE",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path49": {
+        "name": "SouthportC3",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path47": {
+        "name": "SouthportN",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path53": {
+        "name": "SouthportC2",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path50": {
+        "name": "SouthportW",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path52": {
+        "name": "SouthportC1",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path51": {
+        "name": "SouthportS",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path43": {
+        "name": "RoyalLakes",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path42": {
+        "name": "LakeHanes",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path41": {
+        "name": "KepriPalms",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path46": {
+        "name": "SunnySandsW",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path44": {
+        "name": "SunnySandsE",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    },
+    "path45": {
+        "name": "SunnySandsN",
+        "electoralVotes": 1,
+        "results": {
+            "socialist": 25,
+            "conservative": 25,
+            "liberal": 25,
+            "others": 25
+        },
+        "winner": "others",
+        "turnout": 70,
+        "reporting": 0,
+        "voters": 7000,
+        "lastUpdated": "2025-04-10"
+    }
+        };
+        
+
+        // Colors for parties
+        var partyColors = {
+            socialist: "#dd0000",
+            conservative: "#0066ff",
+            liberal: "#ffbb00",
+            others: "#aaaaaa"
+        };
+
+        function hsvToRgb(h, s, v) {
+            var r, g, b;
+
+            var i = Math.floor(h * 6);
+            var f = h * 6 - i;
+            var p = v * (1 - s);
+            var q = v * (1 - f * s);
+            var t = v * (1 - (1 - f) * s);
+
+            switch (i % 6) {
+                case 0: r = v, g = t, b = p; break;
+                case 1: r = q, g = v, b = p; break;
+                case 2: r = p, g = v, b = t; break;
+                case 3: r = p, g = q, b = v; break;
+                case 4: r = t, g = p, b = v; break;
+                case 5: r = v, g = p, b = q; break;
+            }
+
+            return [ r * 255, g * 255, b * 255 ];
+        }
+
+        function componentToHex(c) {
+            var hex;
+            c = Math.floor(c);
+            if (c<16){
+                hex = "0"+c.toString(16);
+            }
+            else if (c==0){
+                hex = "00";
+            }
+            else {
+                hex = c.toString(16);
+            }           
+            return hex;
+        }
+
+        function rgbToHex(r, g, b) {
+            return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+        }
+
+        // function hsvToHex(h, s, v) {
+        //     return rgbToHex(hsvToRgb(h, s, v));
+        // }
+
+        function hsvToHexDict(colour) {
+            return colour;
+        }
+
+        function getPartyColor(winner, margin) {
+            colour = {h:0, s:0, v:0}
+
+            // set base hues for parties
+            switch (winner){
+                case "socialist":
+                    colour.h = 0; break;
+                case "conservative":
+                    colour.h = 0.62; break;
+                case "liberal":
+                    colour.h = 0.13; break;
+                case "others":
+                    colour.s = 0; break;
+            }
+
+            // set saturation and value based off margin
+            margin *= (1/0.3)
+            if (margin < 0.5){
+                colour.s = 0.5 + margin;
+                colour.v = 1;
+            }
+            else if (margin > 0.5 && margin < 1){
+                colour.s = 1;
+                colour.v = 0.5 + (1 - margin);
+            }
+            else {
+                colour.s = 1;
+                colour.v = 0.4;
+            }
+
+            if (winner == "others"){
+                colour.s = 0;
+                if (margin < 0.75){
+                    colour.v = 0.75 - margin
+                }
+                else {
+                    colour.v = 0;
+                }
+            }
+
+
+            // convert hsv to rgb
+            colour = hsvToRgb(colour.h,colour.s,colour.v);
+
+            // convert rgb to hex
+            colour = rgbToHex(colour[0],colour[1],colour[2]);
+            return colour;
+        }
+
+        // Create SVG election map
+        function generateElectionMap() {
+            // Create simplified state shapes (abstract representation)
+            const svgCode = `
+            <svg id="election-map" viewBox="0 0 1000 500">
+                <!-- States -->
+  <g id="g82" style="display:inline" name="myapolis">
+    <path d="m 465.59019,187.15705 v 56.46167 l 12.37133,9.83248 h 25.61911 l 33.69665,26.96217 25.05894,-18.7141 -26.64489,-11.73675 v -3.48971 -17.44596 l -8.88163,-5.7087 h -20.30057 v -36.1611 z" id="path23" name="TreedaleN" class="region" fill="${getStateColor('path23')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 719.82686,237.90848 v 19.98379 11.57862 h 11.41946 v -11.57862 -3.64836 l 1.90273,0.15968 v -10.30945 l -7.13652,-2.69544 z" id="path31" name="MNW4" class="region" fill="${getStateColor('path31')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 465.59019,243.61872 -21.25194,21.56923 -21.88755,14.59187 -5.70921,16.17628 47.26275,13.32373 19.98379,-13.32373 14.27406,13.32373 25.05894,-19.03295 13.95729,-9.83351 -33.30701,-26.96217 h -26.00979 z" id="path24" name="TreedaleS" class="region" fill="${getStateColor('path24')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 587.39515,179.22627 -80.88602,7.93078 v 36.1611 h 20.30057 l 8.88163,5.7087 v 20.93567 l 26.64489,11.73675 -64.07413,47.58056 61.22004,55.19198 27.59573,-4.44056 12.05405,-26.32759 6.97838,-3.48971 18.08055,-2.53783 2.85512,-9.83247 -4.44055,-6.97839 7.29464,-6.66109 v -48.21514 l 2.22157,-9.83351 5.7087,-6.02651 25.69404,-17.76325 h 23.47195 l 8.88163,-2.06086 -2.53783,-11.10217 c -13.70713,-7.20567 -13.70819,-7.20616 0,-0.001 v 0.001 l 2.53783,-0.63458 16.01969,3.64784 1.18856,-3.01326 -1.18856,-3.54242 -2.77554,-1.26969 -1.34824,-2.32543 v -3.80597 l 5.31234,-10.57404 3.252,-8.45891 h -37.58841 z" id="path25" name="AcidLakeRiverdale" class="region" fill="${getStateColor('path25')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 679.48979,274.80958 -16.28273,8.24704 -12.47675,0.84646 -20.83026,-1.90272 v 22.20381 l -7.29464,6.66109 4.44055,6.97839 23.68435,-9.83351 8.45839,-1.0573 7.40162,-1.48053 1.48001,-13.7449 6.3438,-4.44107 5.92109,-7.82381 2.7497,-4.65295 z" id="path27" name="WestMyapolis" class="region" fill="${getStateColor('path27')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 695.87794,220.3049 -8.88163,2.06086 h -23.47195 l -25.69404,17.76325 -5.7087,6.02651 -2.22157,9.83351 v 26.01133 l 18.88516,1.72496 1.9451,0.17776 12.47675,-0.84646 16.28273,-8.24704 h 3.5941 l 1.0573,-2.96054 9.0935,-13.32218 -13.95677,-9.72706 4.86327,-6.3438 6.9789,-4.65294 6.55567,-1.69189 v -10.36216 z" id="path26" name="ParliamentHill" class="region" fill="${getStateColor('path26')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 695.87794,208.56815 -2.53783,0.63355 4.33565,16.54731 v 10.36216 l -6.55567,1.69189 -6.9789,4.65191 -4.86327,6.34483 13.95677,9.72706 2.64325,-3.87625 10.46758,6.33449 v -10.22986 h 5.55211 V 232.0401 l -4.12378,-4.59869 v -8.4062 l 2.06138,-4.28243 2.0624,-2.53679 z" id="path28" name="MNW1" class="region" fill="${getStateColor('path28')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 684.14119,271.84904 -1.0573,2.96054 -8.66976,12.47676 -6.3438,4.44107 -1.48001,13.7449 17.55087,-3.17138 h 8.4062 v -24.58351 h -8.4062 z" id="path37" name="MSW2" class="region" fill="${getStateColor('path37')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 751.2296,287.07447 -5.23327,7.77265 -1.74512,-0.9524 -4.59868,4.5992 -1.58699,1.42731 -4.91649,-1.42731 -4.91598,5.55109 h -6.9789 l -0.3173,4.91701 2.06241,1.90324 v 4.75837 h -6.50296 l -3.01326,5.55056 -2.22053,0.79324 -1.58543,3.01273 -3.01326,5.07566 -5.86837,5.55109 -1.58699,2.85512 0.63511,3.64784 1.74459,5.70921 1.74408,-0.95085 1.7446,-1.90427 1.74511,-0.3173 1.03043,1.42731 1.5074,1.74511 -0.6351,3.48868 0.15813,3.01428 1.90428,3.01325 2.85408,3.17139 1.42731,3.96513 0.15968,3.48868 -0.79324,3.96565 -1.58646,2.06188 -0.79324,2.69596 0.47594,3.01326 3.17242,5.55108 3.48868,4.44056 3.807,4.12481 2.5368,1.90272 2.3797,-3.64783 -1.26969,-3.17242 -2.85409,-5.07566 -1.90273,-4.59869 -0.6351,-3.96513 0.31781,-6.9789 1.4273,-6.02599 6.66109,-12.6876 4.75837,-7.45432 5.3914,-5.23483 5.07566,-3.17138 5.23379,-1.58646 5.23327,-1.58595 5.86838,-0.63459 3.64835,0.31729 4.91598,1.42782 3.01429,1.90273 4.28191,2.53783 5.71024,3.64784 3.9641,2.69596 3.01429,3.33054 2.21898,3.33055 1.74512,3.33055 1.4273,4.44107 v 2.0624 l 1.42782,-0.6351 1.11001,-3.64784 v -4.75681 l -0.63459,-4.28295 -2.53783,-7.93026 0.79427,-3.48919 -2.3797,-4.28243 -7.45432,-7.77162 -8.88163,-3.64784 -4.44056,-0.63355 -7.93078,-4.44056 -1.58543,-1.90324 -2.53783,-13.00593 1.58543,-8.48475 z" id="path34" name="MSE2" class="region" fill="${getStateColor('path34')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 757.5734,246.15552 -3.9641,1.16375 h -5.15524 l -8.80153,-1.16272 v 16.33544 h 1.74356 v 13.3227 h 7.05797 v 4.44055 h 6.26525 l -1.93684,7.25486 8.91574,2.49907 3.01325,-27.35905 3.64784,-4.75785 v -9.51518 l -3.96513,-2.22157 -2.69596,2.85512 -3.49023,-1.48053 z" id="path33" name="MNE3" class="region" fill="${getStateColor('path33')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 733.14905,244.09414 v 10.30945 l -1.90273,-0.15968 v 5.60018 7.40626 h 10.14977 v -4.75836 h -1.74356 v -16.33647 z" id="path32" name="MNE1" class="region" fill="${getStateColor('path32')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 711.89763,232.0401 v 18.71514 h -5.55108 v 9.08885 h 5.55108 v 2.6479 h 7.92923 v -24.58351 l -4.12326,-2.85513 -2.3797,-3.01325 z" id="path29" name="MNW2" class="region" fill="${getStateColor('path29')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 695.87794,254.65061 -9.16482,13.43225 h 19.63343 13.48031 v -5.59087 h -7.92923 v -2.6479 h -5.55108 v 1.14101 z" id="path30" name="MNW3" class="region" fill="${getStateColor('path30')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 686.71312,268.08286 -2.57193,3.76618 v 5.86838 h 8.4062 v 10.94403 h 12.84676 17.60513 v -12.84676 h 4.28139 v -6.3438 h -7.45381 v -1.38803 h -14.43271 z" id="path38" name="MSW1" class="region" fill="${getStateColor('path38')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 692.54739,288.66145 v 5.23327 8.40621 h 6.02754 l 5.23379,1.58595 6.02651,3.48867 3.80596,2.53783 2.06241,3.48971 0.79272,2.22054 h 6.50296 v -4.75837 l -2.06241,-1.90324 0.3173,-4.59972 -9.03924,-8.24704 -2.22157,1.26814 -4.44108,-3.48868 v -5.23327 z" id="path40" name="MSW3" class="region" fill="${getStateColor('path40')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 731.24632,267.25035 v 2.22054 h -3.96565 v 6.3438 h -4.28139 v 12.84676 h 7.61194 v -4.75837 h 5.71024 v -1.90272 h 12.1326 v -6.18567 h -7.05797 v -8.56434 z" id="path36" name="MNE2" class="region" fill="${getStateColor('path36')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 748.45406,280.25524 v 1.74512 h -12.1326 v 1.90272 h -5.71024 v 4.75837 h -0.83354 v 13.63948 l 3.47472,-3.77703 4.81418,1.39733 6.18463,-6.02651 1.74512,0.9524 5.23327,-7.77265 1.55287,0.43563 1.93684,-7.25486 z" id="path35" name="MSE1" class="region" fill="${getStateColor('path35')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 705.55228,288.66145 v 5.23327 l 4.44211,3.48868 2.22054,-1.26814 6.34379,5.78776 2.69545,2.14199 h 6.9789 l 1.54461,-1.74408 v -13.63948 h -11.21896 z" id="path39" name="MSW4" class="region" fill="${getStateColor('path39')}" stroke="#ffffff" stroke-width="0.6" />
+  </g>
+  <g id="g83" name="peninsula" style="display:inline">
+    <path d="m 782.4742,246.15655 -2.1146,7.13652 h -12.0003 v 4.5992 l -3.64784,4.75785 -1.33997,12.15946 -3.26026,23.68434 0.74259,3.80701 4.06848,-5.07514 3.437,-1.94407 h 4.59869 l 11.41946,3.2122 8.88162,0.29714 4.44056,1.13017 v -4.63951 h 9.93893 l 14.16813,8.76329 v -25.67285 z" id="path6" name="GoldMesa" class="region" fill="${getStateColor('path6')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 821.80669,278.37216 -14.16813,16.90956 h -9.93893 v 4.63951 l 10.57403,8.08891 8.24653,4.65295 10.15028,5.18056 4.65243,3.06596 0.42271,4.22868 4.86379,6.97891 7.61297,5.07514 7.19078,4.23023 -9.72861,-31.72003 5.71025,-19.61379 -7.61297,-8.08839 z" id="path7" name="Airport" class="region" fill="${getStateColor('path7')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 874.67426,273.37504 -14.37948,5.29322 -12.89999,11.71712 -5.71025,19.61327 0.51108,1.66398 1.98593,6.47764 h 0.091 l 7.14065,23.2823 6.3438,-3.807 h 3.80597 l 1.05729,-2.11408 v -6.97839 l -2.32543,-9.30538 -0.20723,-9.09195 0.20723,-2.66495 1.26814,-4.86327 2.53782,-4.65295 4.22869,-4.86378 4.01784,-2.77503 8.45891,-6.10608 z" id="path8" name="DactylBeachS" class="region" fill="${getStateColor('path8')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 950.59056,261.36699 -16.07086,8.1039 -12.05404,2.06086 h -10.15132 l -12.47573,-2.06086 h -10.99622 l -14.16813,3.90415 6.13192,10.82467 8.67079,-2.19935 h 4.6514 l 4.01836,0.23771 8.0362,1.96164 6.13141,1.1839 h 11.8432 l 11.41843,-3.38325 12.68863,-4.28294 10.14977,-4.34238 z" id="path9" name="DactylBeachN" class="region" fill="${getStateColor('path9')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 926.4835,179.22627 -2.32596,1.05782 -2.7497,2.7497 -11.41894,11.84165 -6.13193,5.2865 -4.01836,1.48053 -3.59512,-0.84594 -1.90273,-1.69189 h -2.32596 l -2.96054,1.90273 -5.07566,1.90324 -4.44055,1.26918 -3.80752,-1.26918 -5.28599,-2.11408 -9.19892,-5.92109 -5.18108,-3.59513 -1.48001,-3.59513 H 817.578 l -1.05781,5.71025 -2.96055,4.22868 -6.55567,4.65295 -6.76651,4.22868 -6.3438,2.69596 -4.22972,3.85971 -4.01835,4.2292 -2.74867,4.01785 v 4.22971 l -1.26918,6.50193 1.48157,4.07107 -0.63511,10.04435 39.33249,32.21664 17.97513,3.6282 7.61297,8.38502 12.89999,-11.71712 14.37948,-5.29322 14.16813,-3.90415 h 9.93893 l 6.3133,0.86765 7.21972,1.19321 h 10.15132 l 12.05404,-2.06086 16.07086,-8.1039 7.82381,12.00805 4.23023,-3.90415 3.59513,-3.75481 2.11357,-4.73098 v -7.69203 l -1.05627,-3.43597 -2.1146,-1.95699 -5.07566,-2.69544 -7.18922,-1.11053 -9.09351,0.89814 -9.93944,2.90783 -2.1146,2.85513 -13.74542,5.6565 -8.79842,1.23197 1.60817,-6.88847 4.65243,-3.43597 5.71024,-3.22513 v -3.96513 l -1.69189,-2.22053 h -2.7497 l -4.44004,-0.95085 -4.22971,-3.38429 v -3.80597 l 2.74867,-2.53783 1.48104,-2.11408 v -2.53783 l -1.26917,-5.71025 -1.90324,-7.66568 1.05781,-1.63866 2.1146,-3.80597 14.37897,-13.95677 3.17242,-5.71024 v -4.01681 z" id="path10" name="PeninsulaBasin" class="region" fill="${getStateColor('path10')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 834.49532,92.313745 -1.69189,1.903243 v 7.401102 l -2.32596,4.01784 -3.80597,6.76703 -2.96054,6.13296 -3.3848,3.17138 -3.80597,1.26917 -4.22869,3.80597 -3.38429,4.44107 -2.53679,6.55568 v 12.26488 l 1.26814,6.76755 1.26865,2.96054 2.53783,5.07463 5.92109,6.55567 1.69189,1.90272 v 9.93945 l -1.48002,4.44055 h 37.00653 V 162.7327 l -1.18287,-8.45891 -3.04633,-6.97839 -6.17378,-13.11134 -1.22732,-8.24704 -0.42374,-3.80597 1.65106,-5.92109 2.79052,-5.28753 h -10e-4 l 4.44211,-6.55567 V 92.313745 Z" id="path4" name="Snowdonia" class="region" fill="${getStateColor('path4')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 992.67222,109.44242 -4.65139,2.53731 -6.76755,0.6351 -5.70921,-0.6351 -6.13296,0.21239 -8.45891,0.84542 -6.97839,1.69241 -5.2865,2.32544 h -5.07566 l -6.88691,1.90324 -3.26285,-0.6351 -2.32699,1.6924 -4.43953,2.96054 -4.01784,2.32596 -1.48156,3.59513 -5.70921,6.3438 -3.80597,0.84542 -4.44056,-0.84542 -5.71025,1.90324 -5.28649,-1.05782 h -8.66924 l -5.81567,1.90325 -7.08432,3.59513 -6.13296,5.07566 -1.26814,10.57351 v 14.38 l 1.26814,4.6514 2.53783,2.96054 4.86379,2.53783 h 4.86326 l 4.23024,-1.26814 11.20707,-3.17242 2.53783,-0.6351 9.51621,-7.82381 8.24704,-8.45892 2.96054,-2.53783 6.13296,-3.80597 4.22869,-3.38325 5.49837,-7.61297 h 4.65243 l 3.1719,-3.5941 13.53405,-5.28753 6.55464,-2.96055 5.07515,-1.26865 c 0,0 4.44083,0.63473 5.28753,0 0.84549,-0.63474 6.76651,-1.48001 6.76651,-1.48001 0,0 5.0755,0.42275 8.67079,0 3.59407,-0.42394 6.3438,-2.53783 6.3438,-2.53783 l 6.55467,-5.2865 3.3843,-4.86431 v -2.74867 l -2.1146,-2.11511 -2.5379,-1.48001 z" id="path5" name="ElizabethIsland" class="region" fill="${getStateColor('path5')}" stroke="#ffffff" stroke-width="0.6" />
+  </g>
+  <g id="g84" name="yuppington" style="display:inline">
+    <path d="m 715.86173,137.1446 -2.96054,6.23838 h -5.07463 l -5.20795,13.63948 h -31.60892 v 10.14976 l 7.74009,12.05405 h 37.58841 l 3.48867,-7.18923 3.22513,-11.63133 1.48053,-10.14977 3.80597,-6.87296 z" id="path21" name="IdsteinBeach" class="region" fill="${getStateColor('path21')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 706.76926,16.396932 1.36323,16.4946 8.2057,32.777845 14.74742,1.088822 v -9.759611 h 3.09438 10e-4 l 11.07477,0.211873 12.89947,-6.132959 -18.39784,-19.878373 -8.4584,-5.708695 -4.01836,-0.42323 -3.17086,3.171382 -1.90428,1.692404 -3.80597,-1.903243 0.21187,-4.863269 -2.27324,-2.749703 -2.59054,0.634586 -2.7497,-0.845426 z" id="path16" name="YuppingtonN" class="region" fill="${getStateColor('path16')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 758.15527,51.077502 -12.89947,6.132959 -14.17019,-0.211873 v 9.759611 c 5.8603,0.432338 5.8603,0.43234 0,-3.4e-5 l -14.74742,-1.088822 10.14977,33.833593 v 2.960544 l 18.76784,21.14652 1.05782,-4.6514 v -9.51621 l 1.48001,-5.2865 1.05782,-5.286507 V 88.084029 l 0.84542,-5.286499 2.32544,-4.652946 1.90325,-5.074109 6.13296,-6.312276 1.6924,-4.261755 v -5.285983 z" id="path19" name="YuppingtonS" class="region" fill="${getStateColor('path19')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 699.36765,16.396932 -3.9486,2.1146 -3.02979,2.537829 -2.11511,4.017843 -2.74816,1.48053 -3.17241,2.537829 -2.32596,2.113566 -3.27784,0.846977 -3.27783,1.690853 -4.46226,2.115116 1.92443,-3.595129 1.69189,-3.806486 -0.42375,-3.59513 -1.69085,-2.748669 -4.44108,-2.960026 -5.49837,2.325439 -9.93893,3.171383 -5.28598,1.481563 -2.11512,2.32544 -3.80597,-2.32544 -2.96054,-2.537829 -9.93944,7.611938 -16.07189,4.652946 -10.36164,6.766512 -13.32219,8.458915 -5.49837,6.978386 v 11.419458 l 3.807,5.708695 V 179.22627 h 91.67089 l -7.74009,-12.05301 v -10.1508 h 31.60892 l 5.20795,-13.63948 h 5.07463 l 2.96054,-6.23838 12.47676,6.23838 4.81056,-8.56434 5.12837,-4.65294 4.01784,-2.96054 2.96054,-3.5941 -18.76784,-21.14755 v -2.96054 l -18.35547,-66.611438 -1.36323,-16.4946 z" id="path20" name="PineValley" class="region" fill="${getStateColor('path20')}" stroke="#ffffff" stroke-width="0.6" />
+  </g>
+  <g id="g86" name="great_north">
+    <path d="m 675.68124,-0.94361165 -3.61477,1.26917317 -16.12976,1.26865638 -10.2831,0.2118734 -14.69729,5.7092122 -11.10217,3.8059695 -15.86001,5.921085 -17.55087,6.344833 -25.79945,13.533024 -24.74165,7.085355 -4.44055,-1.586983 1.26814,-4.228682 0.21187,-5.710246 -4.86327,-4.441073 v -5.708695 l -2.11512,-5.287533 -3.38325,1.269174 -2.53783,2.115116 -2.11512,2.748669 -5.07514,9.516215 -5.07463,6.978386 -3.807,7.401615 -8.03517,7.189225 -5.07514,3.80597 -5.71024,3.384289 -10.99675,4.01836 -22.20381,5.921085 -15.64814,1.902726 -17.76326,1.26814 h -12.68863 l -7.61194,-1.480013 v -0.60203 l -19.62774,-3.840076 -11.52023,-3.840076 -9.28057,-4.480346 -10.24123,-8.320423 -9.38651,13.89941 v 37.302636 l -60.05577,98.35213 17.2806,13.65343 14.72055,2.87993 12.48038,7.0404 2.56005,-1.28003 14.08131,6.08025 14.39963,-5.43946 6.40116,-7.68118 33.28118,-20.8008 4.90719,-8.6403 v -0.40773 l 112.73007,-0.33383 77.16687,-7.59695 V 75.184041 l -3.80597,-5.708695 V 58.055888 l 5.49837,-6.978386 23.68383,-15.225427 16.0724,-4.652946 9.93789,-7.611938 5.28702,-8.458915 8.66976,-3.807003 h 5.71024 l 4.01784,-1.057817 7.82433,-3.3832558 8.77621,-3.5940959 -0.9524,-2.74970293 z" id="path77" name="GreatDesert" class="region" fill="${getStateColor('path77')}" stroke="#ffffff" stroke-width="0.6" />
+    <path fill-rule="nonzero" fill="${getStateColor('path220')}" fill-opacity="1" stroke-width="0.6" stroke-linecap="butt" stroke-linejoin="miter" stroke="#ffffff" stroke-opacity="1" stroke-miterlimit="10" d="m 346.95724,52.980398 -17.44575,-17.445745 -6.97854,-7.2959 -1.58682,2.960518 4.75814,5.921036 -4.75814,4.457172 -3.48868,-3.187711 -2.53775,2.220389 4.12341,7.929462 0.31737,4.440779 -1.90303,4.229978 -2.53775,1.797626 -5.39171,2.853951 -1.58683,2.749728 6.3438,4.863543 0.63474,3.806043 -1.2683,4.863541 -3.48985,2.432355 -4.75814,3.172486 h -4.75698 l -3.17248,-3.489853 V 76.77112 l -2.2204,-3.489853 -4.44077,-2.855128 h -2.53775 l -5.39287,-1.268282 -4.75815,-2.399569 -9.51512,7.792448 -2.22039,12.37023 -16.49482,18.715204 -12.37024,8.24682 -6.97854,17.44693 -16.17745,25.69258 16.17745,6.02642 47.57911,38.17057 59.5289,-97.48634 V 66.758288 Z m 0,0" id="path220" name="PortSepulveda" class="region" />
+  </g>
+  <g id="g88" style="display:inline" name="gibson">
+    <path d="m 206.75431,0.00826823 -0.95085,0.95084635 c 0,0 -1.69235,1.37503682 -2.11512,1.69240312 -0.42277,0.3173665 -5.28753,1.903243 -5.28753,1.903243 V 21.472074 l -5.49734,5.921086 v 15.225427 l 2.22054,1.692403 -1.0573,3.277836 v 0.633554 l 3.48867,4.757849 -3.48867,7.930782 6.97838,1.585433 v 39.016226 l 48.8487,4.12326 16.4946,-18.715137 2.22054,-12.370305 9.51621,-7.792289 13.00489,-9.970451 1.90325,-5.075659 1.90272,-7.295679 v -5.075659 l -1.58543,-6.661092 -3.80597,-8.247042 -3.01429,-1.585433 H 272.4149 l -3.80597,1.26814 -4.12327,-4.123263 -6.02753,-3.595129 -12.05302,-1.48053 -7.61348,1.48053 -6.6611,3.595129 -3.80597,3.80597 -2.85512,7.612972 -1.26969,5.391919 v 4.034379 l -2.53628,3.261299 -4.12378,3.172933 -3.17241,0.633553 -5.07515,-5.391919 -2.85512,-5.075659 -2.74867,-6.132959 -0.84542,-5.074109 1.0573,-4.758366 1.79627,-5.710245 0.74052,-4.545976 -1.05781,-3.4897096 1.05781,-2.2195028 1.0573,-3.5951294 z" id="path66" name="EastGibson" class="region" fill="${getStateColor('path66')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 198.98269,5.2420573 -5.49838,5.1810787 -6.1314,2.43086 h -21.25297 l -2.53783,0.635103 v 2.1146 l 0.52917,1.057816 -0.52917,2.32544 -1.26866,1.585949 v 1.904277 l 0.84595,2.325439 0.10542,2.008663 -0.31626,6.978386 -0.63511,2.432409 -5.71024,6.766512 h 24.79435 v 17.922421 h 12.68915 l 3.48867,-7.930782 -3.48867,-4.757849 1.0573,-3.91139 -2.22054,-2.009696 V 31.992362 h 0.58084 v -3.911905 l 5.49838,-5.921086 z" id="path72" name="GibsonN1" class="region" fill="${getStateColor('path72')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 156.00236,42.301294 -6.66109,8.564335 v 2.749703 l 1.05782,6.131409 2.85357,4.018359 1.90428,1.904277 2.2195,-1.586984 h 7.29568 16.70699 V 42.301294 h -12.26592 z" id="path74" name="GibsonN2" class="region" fill="${getStateColor('path74')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 157.37644,64.082393 -2.22054,1.586984 2.53783,4.440555 -1.26814,3.277837 -6.23889,-3.807003 h -3.27784 l -14.59032,14.062191 3.80597,4.441072 1.48001,10.361642 18.92649,0.634586 21.25245,7.507033 3.5941,-4.65191 V 77.616451 64.082393 Z" id="path76" name="GibsonS1" class="region" fill="${getStateColor('path76')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 119.10126,17.348812 -1.26918,1.373559 -1.79782,1.904277 -1.69085,2.801379 -0.95188,2.802413 -2.11512,1.37356 -2.64325,-0.31626 v 15.965434 l 9.19892,11.630298 4.54753,15.966467 9.93893,12.793018 14.59032,-14.062191 -6.97838,-14.697294 0.52813,-8.141622 1.05782,-0.633553 2.00918,-1.163754 5.81566,-5.286499 3.91139,-5.075659 0.42323,-3.277836 0.95188,-3.065963 v -4.123262 l -1.26814,-3.700549 -2.0097,-2.53783 -1.26813,-0.528133 -0.74053,0.528133 -3.06699,2.32699 -3.48868,2.536796 -2.85512,2.431893 -3.48868,0.528133 -1.26917,-1.585433 -2.11409,1.0573 -2.32698,1.163236 -3.70055,-0.317293 -3.5941,-1.48053 -1.90428,-0.422713 -0.95084,-2.325956 v -3.172417 z" id="path75" name="GibsonW" class="region" fill="${getStateColor('path75')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 181.37756,60.911011 v 14.380001 0.105419 20.19515 h 9.83402 v 10.044349 h 9.83351 V 86.603499 62.496444 l -6.97838,-1.585433 z" id="path71" name="GibsonS2" class="region" fill="${getStateColor('path71')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 181.37756,95.591581 v 6.343799 l -3.5941,4.65191 -21.25245,-7.507033 -18.92649,-0.634586 -11.10165,2.749699 -27.596762,45.04273 42.504902,51.70331 19.66598,-9.19893 5.39295,-15.54272 34.57515,0.95137 6.44922,-7.29516 6.87297,-9.83351 16.17782,-25.69353 2.37608,-5.94227 4.60231,-11.50369 12.3703,-8.24704 -48.8487,-4.12326 v 4.12326 h -9.83351 V 95.591581 Z" id="path65" name="SilverbirchWoods" class="region" fill="${getStateColor('path65')}" stroke="#ffffff" stroke-width="0.6" />
+    <path id="path64" d="m 94.359615,25.067204 -5.710246,2.220536 -5.074109,4.017843 v 4.811076 l 2.960543,3.753259 4.017843,2.431376 1.056266,3.807003 -2.748153,2.114083 -1.057816,6.661092 0.422713,4.017842 2.32699,3.384807 5.550049,5.708695 2.802413,2.855123 2.220532,4.441073 -0.21239,2.325439 -2.008142,3.701066 -7.083806,6.766512 -2.537829,1.480013 -2.115117,-2.960543 -3.594096,-6.766512 c 0,0 -0.846874,-2.325932 -1.692403,-2.220536 -0.845509,0.105405 -10.573515,-0.95188 -10.573515,-0.95188 l -3.171382,0.95188 -3.38429,4.335653 -2.325956,1.690853 1.692403,4.441072 0.845427,5.022433 -2.53783,4.493782 -2.325956,8.035686 -3.59513,2.32596 0.19327,0.17415 -7.592301,-3.46543 -8.406205,-2.22002 h -4.915979 l -3.488676,2.90784 -3.80752,4.22971 -0.792716,2.5368 v 16.65273 l -4.598686,5.86837 -3.172416,3.01326 -0.952397,3.96513 v 3.80752 l 3.172416,1.11001 14.432711,11.89488 2.696993,-2.22054 5.233789,6.02651 3.805969,0.95188 v 11.41946 l 4.598686,3.48867 1.586983,6.50297 4.123263,5.07566 4.758366,1.26813 4.915979,1.11053 5.868375,3.80597 5.656503,5.65754 3.384289,3.85868 2.536796,5.39295 v 1.90272 l 26.01082,-3.17241 4.75836,1.26969 13.79761,6.50193 h 9.19892 l 2.37867,-19.0314 -42.504902,-51.70382 -0.427364,-0.38551 27.546636,-44.96108 11.10165,-2.749699 -1.48001,-10.361642 -13.7449,-17.23409 -4.54753,-15.966467 -9.19892,-11.630298 V 27.28774 l -9.727052,-2.220536 z m -26.010815,6.237345 -3.171383,1.37511 -2.960543,3.437 v 6.184635 l 2.960543,3.807003 5.074109,4.123779 h 4.018359 l 3.383256,-2.009696 1.692403,-3.277837 v -5.709212 l -2.960542,-3.118672 -5.603793,-3.437 z m -13.322185,24.848096 -3.171382,2.325956 v 7.190776 l -2.115117,1.480013 -2.748669,2.431376 -3.807003,2.432409 -6.766512,1.743563 -3.383256,1.534274 -5.075659,1.373559 -1.903243,1.903243 -2.1146,5.075143 v 10.151318 l 2.32544,3.383256 3.383256,-1.057817 3.384806,2.325957 h 2.113566 l 2.115117,-0.845427 2.115116,-4.651912 1.690853,-4.864303 1.692403,-4.441072 1.480013,-3.171383 2.53783,-2.855123 h 6.132959 l 5.921085,-0.95188 6.343799,-0.21084 2.960543,-1.162719 2.643249,-4.441073 0.950847,-3.700549 -0.950847,-4.652946 -0.740006,-2.22002 -5.075659,-3.277836 -5.498373,-0.845943 z" name="PaintedCoast" class="region" fill="${getStateColor('path64')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 19.318717,144.56999 1.11001,3.06699 2.53783,4.54598 9.040792,9.83247 5.233789,4.75837 11.418941,6.97839 v -11.41895 l -3.805969,-0.95136 -5.234823,-6.02754 -2.694926,2.22105 -5.17e-4,-5.1e-4 L 22.491134,145.68 Z" id="path63" name="PaintedBeach" class="region" fill="${getStateColor('path63')}" stroke="#ffffff" stroke-width="0.6" />
+  </g>
+  <g id="g87" style="display:inline" name="centralia">
+    <path d="m 397.18041,187.15705 -4.86327,8.56434 -15.90239,9.93892 -17.0863,10.67894 -6.34483,7.61245 -14.27303,5.39296 -1.05781,12.6876 9.30434,1.58646 v 2.53783 l 1.26865,8.49406 h 13.00593 l 15.18305,5.19348 46.03595,19.93573 21.88755,-14.59187 21.25194,-21.56923 v -56.46167 z" id="path54" name="Sepaudia" class="region" fill="${getStateColor('path54')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 381.13333,261.88789 -11.02,32.00683 h -7.93079 l -5.14904,-2.61689 -4.68446,-4.20336 h -5.39192 l -9.30434,-0.84543 -2.3797,7.66568 -3.64784,1.21595 -3.17139,-1.21595 -4.86327,2.90784 v 6.34379 l -16.0724,20.7238 h 39.43894 60.90274 l 8.88163,-27.91405 5.70921,-16.17628 z" id="path59" name="CentralLakeS" class="region" fill="${getStateColor('path59')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 338.81808,242.23121 -0.21446,3.92534 -6.97838,3.91139 2.32699,3.38326 -1.16427,3.3848 1.16427,3.00809 2.32595,4.60385 -1.05781,2.32596 -0.84543,5.07514 0.42271,4.5992 2.85513,3.33158 1.58594,3.9455 -1.58594,2.50372 9.30434,0.84543 h 5.39192 l 2.56211,2.29908 2.12235,1.90428 5.14904,2.61689 h 7.93079 l 11.02,-32.00683 -19.90163,-7.23728 h -4.1982 -8.80773 l -1.26865,-8.49406 v -2.53783 z" id="path58" name="CentralLakeE" class="region" fill="${getStateColor('path58')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 337.65278,242.03226 -16.17731,0.19895 -10.1508,7.83673 v 4.58267 h 10e-4 l -1.26969,14.6606 -4.22868,4.96094 1.69085,1.38286 v 14.59187 l 16.0724,6.55568 4.86327,-2.90784 -1.21543,-2.4846 -6.18567,-5.18108 -4.01784,-4.22868 -1.6924,-4.44107 v -4.65243 l 3.17242,-3.17294 3.38325,-5.28598 v -4.60385 l -1.90273,-2.37453 -1.48052,-2.81895 1.05729,-1.19941 1.90325,-3.38326 3.59513,-2.53783 h 3.38325 l 3.17139,2.53783 6.97838,-3.91139 0.21446,-3.92534 z" id="path56" name="CentralLakeC" class="region" fill="${getStateColor('path56')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 295.2533,214.75278 -13.53406,27.47843 -20.93464,34.21807 h -0.001 l -5.28599,7.4538 2.32544,39.96707 h 49.69516 l 16.0724,-20.7238 v -6.34379 l -16.0724,-6.55568 v -14.59032 l -1.69085,-1.38441 -2.32699,2.17713 6.55567,-7.13807 1.26969,-19.24327 10.14977,-7.83673 16.17731,-0.19895 1.05781,-12.6876 -13.95729,-6.02651 -2.53783,1.26814 -12.37133,-6.97838 z" id="path55" name="CentralLakeW" class="region" fill="${getStateColor('path55')}" stroke="#ffffff" stroke-width="0.6" />
+    <path fill-rule="nonzero" fill="${getStateColor('path272')}" fill-opacity="1" stroke-width="0.6" stroke-linecap="butt" stroke-linejoin="miter" stroke="#ffffff" stroke-opacity="1" stroke-miterlimit="10" d="m 175.51063,241.39845 -19.03257,-21.88769 -15.06726,-21.56917 -2.37849,19.03258 h -9.19891 l -13.79898,-6.50306 -4.75697,-1.2683 -26.01111,3.17131 -5.313248,0.31737 -8.643828,-7.45399 -12.212145,-5.71024 -6.819256,-5.07551 -7.771368,-8.24683 -4.440782,-1.90303 -5.392871,0.79283 -3.647951,2.37967 -0.634725,3.33058 0.952093,5.39169 -2.062296,1.74493 v 2.37849 l 5.392879,4.28268 2.379655,3.17132 c 0,0 0.792827,2.37966 0.475469,3.01439 -0.317368,0.63356 -1.110195,1.11019 -2.22039,2.06112 -1.110194,0.9521 -1.744929,3.01322 -1.744929,3.01322 l 1.903023,1.11136 2.537756,1.90303 3.965318,0.95092 5.868341,-1.74375 5.233607,-0.15927 3.435977,2.37848 1.956893,2.37966 0.475462,2.53775 1.110197,2.53776 2.85395,3.17132 1.904195,3.64795 0.792829,2.22039 1.110197,0.95209 H 78.60516 l 9.674393,0.47547 4.12341,0.15927 v 1.42639 l -2.378488,2.37965 -3.172476,2.69586 -3.330591,1.74492 -3.568316,0.95092 -4.995871,-0.79282 -13.797804,-2.22039 -14.274434,-2.37849 -5.868341,-0.31736 -4.916239,1.26829 -2.537756,0.9521 6.503066,1.42755 12.687612,2.69586 29.81715,11.62659 11.260056,2.33048 3.965306,0.95092 h 35.368133 l 34.25795,-9.51512 8.08871,-10.62648 z m 0,0" id="path272" name="Northfjord" class="region" />
+    <path d="m 33.562809,244.09414 v 2.69596 l 5.710246,2.697 4.281392,2.06137 6.661093,2.06189 4.600236,1.74511 9.832474,4.48862 5.392953,2.3306 0.950846,4.44108 v 9.99164 l -0.950846,4.28242 -5.233789,1.58595 h -6.344833 l -5.233789,-0.79272 -8.405171,-2.85512 -6.344833,-2.69596 -4.915979,0.31626 -3.171382,1.26918 -1.11156,2.85512 0.952396,1.90324 2.695443,2.53783 4.600236,2.53731 5.551082,2.22054 4.757849,2.53783 1.110527,3.17138 1.188558,3.33055 1.507401,5.39295 -1.507401,4.28139 -2.299085,3.96514 -5.868375,1.74511 v 2.85512 l 1.744079,1.74356 4.124296,2.22054 10.784872,3.48971 11.259778,7.92975 2.855123,2.85512 v 3.48868 l -2.695443,2.22053 -2.53783,2.37919 -0.635103,3.33106 -0.15813,2.69544 5.233789,5.86838 3.172416,3.01325 v 2.22054 l 0.792717,2.0624 1.903243,2.85513 v 3.01325 l 19.665983,-3.49023 7.930782,3.49023 8.08891,0.95085 3.80597,3.17241 h 32.67088 l 6.18566,-34.89244 1.26969,-17.6041 -4.12481,-22.36297 13.79916,-12.37031 0.31729,-31.72054 -34.25786,9.51518 -36.453584,-0.25993 -4.465361,-1.01854 -12.291756,-3.02256 -27.19989,-10.60659 z" id="path60" name="Westfjord" class="region" fill="${getStateColor('path60')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 214.36728,157.02246 -6.42442,9.19065 -6.89777,7.93802 -34.57515,-0.95137 -5.39295,15.54272 -19.66598,9.19893 15.06729,21.56922 12.53051,14.41153 6.50192,7.47654 v 1.58543 l -8.08891,10.62623 -0.063,6.23373 h 59.53796 v -5.34128 h -3.80596 v -10.09137 h 4.43952 v -10.48928 -71.45507 z" id="path61" name="CentraliaW" class="region" fill="${getStateColor('path61')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 227.5303,162.46709 v 71.45507 10.48928 h -4.44056 v 10.09137 h 3.807 v 5.34128 h 44.0459 l 10.7766,-17.61288 4.09277,-8.30905 9.44129,-19.16834 -64.7082,-51.70486 z" id="path62" name="CentraliaE" class="region" fill="${getStateColor('path62')}" stroke="#ffffff" stroke-width="0.6" />
+    <path fill-rule="nonzero" fill="${getStateColor('path279')}" fill-opacity="1" stroke-width="0.6" stroke-linecap="butt" stroke-linejoin="miter" stroke="#ffffff" stroke-opacity="1" stroke-miterlimit="10" d="m 149.97499,372.56069 h 78.34952 l 9.67439,-40.60174 19.8254,-8.08873 -2.32696,-40.75984 15.44553,-23.26607 h -103.5842 l -0.25413,25.48646 -13.79897,12.37024 4.12458,22.36316 -1.26946,17.60385 z m 0,0" id="path279" name="Asbestos" class="region" />
+  </g>
+  <g id="g85" name="wolfsburg" style="display:inline">
+    <path fill-rule="nonzero" fill="${getStateColor('path280')}" fill-opacity="1" stroke-width="0.6" stroke-linecap="butt" stroke-linejoin="miter" stroke="#ffffff" stroke-opacity="1" stroke-miterlimit="10" d="m 616.26141,328.78997 6.34379,2.69352 h 9.51512 l 4.54734,2.22038 3.06593,3.17132 1.26946,4.54735 -2.85512,5.68331 -3.80605,8.16718 -2.53775,12.05405 -1.90419,13.95706 -4.44078,14.43253 -2.85396,6.81927 -1.90302,3.48985 -7.93064,3.48868 -6.97852,2.53776 -6.02644,7.92946 -34.1838,2.45756 -42.26153,6.1078 -7.93063,-40.60174 8.92722,-55.1748 35.16437,31.70146 27.59559,-4.44079 12.05405,-26.32731 6.97853,-3.48984 z" id="path280" name="WolfsburgN" class="region" />
+    <path d="m 599.76649,419.9816 -40.5014,2.33474 -0.0475,0.046 0.26458,76.91986 -5.71025,7.93078 v 16.49356 28.23136 l 19.35024,9.19892 7.61194,7.61194 6.3438,4.75836 5.71025,-4.12326 6.66109,1.26917 3.80597,-3.807 4.12481,-3.80597 1.26814,4.75785 6.3438,-1.26917 7.61349,-7.61246 2.22002,6.3438 5.07462,-4.12326 v 9.19892 l 4.1243,-4.1243 2.64325,-5.07462 4.33565,-1.58543 9.72706,1.58543 -5.6038,-4.12326 -2.85512,-3.80752 v -4.75785 l 6.51382,-1.26814 4.58835,2.53731 1.90272,3.80649 4.75837,1.26917 3.75326,-2.53783 3.1197,-0.63459 2.32596,2.53783 1.77612,8.56434 v 14.90762 l -4.10208,11.10319 4.10208,-2.22157 4.35684,-7.92923 1.48001,-6.0265 2.43138,0.95084 v 5.07566 l -3.91139,8.56382 3.91139,1.58698 3.807,-7.93078 2.32596,-5.70869 2.93367,-3.17242 4.20284,-2.53783 8.08891,-12.05404 12.44989,-23.78977 11.08201,-20.61838 1.36891,-5.70869 v -4.44107 l -5.71025,3.17138 -7.92923,7.29568 -6.50348,6.9789 -2.77554,5.70869 h -9.2785 l -2.22002,-4.44055 -2.64325,-5.07411 -5.39192,-8.24808 -3.807,-6.34379 -5.92109,-3.80597 -6.44922,-3.49023 -3.1197,-3.17138 -5.65651,1.58595 -1.90324,2.53783 -2.53731,5.70869 -2.96054,-0.31729 -4.65295,-6.02651 -3.80597,-6.66109 -2.53783,0.31729 -3.06596,4.44108 -6.76755,8.56433 -3.17138,3.17242 -7.2962,-2.53783 -6.66109,-9.19892 -1.58543,-9.51622 -1.58595,-6.9789 -3.17242,-13.63948 -6.66109,-13.00489 z" id="path82" name="WolfsburgE" class="region" fill="${getStateColor('path82')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 559.48213,422.62692 -36.1611,5.92005 v 74.85951 l -15.70189,9.83248 -6.97838,5.39295 -5.23379,7.92975 h 5.23379 l 11.89488,2.85512 10.78539,6.66109 30.45085,15.86002 v -28.23136 -16.49356 l 5.71025,-7.93078 z" id="path81" name="WolfsburgC" class="region" fill="${getStateColor('path81')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 416.74149,295.95713 -8.88163,27.91302 3.17138,45.04273 -13.85083,37.42924 5.60379,45.35951 13.95729,26.32862 4.26175,4.75837 1.44849,-2.85512 h 3.17139 l 5.71024,5.3914 -0.6351,5.07566 -2.22002,6.02754 2.53783,4.75681 7.29464,7.2962 7.29568,2.53783 h 9.83351 l 3.80649,3.80597 4.44055,2.22053 3.48971,5.07515 h 14.75001 l 5.23379,4.44107 h 8.24652 l 5.23379,-7.92975 22.68027,-15.22646 v -29.97492 -44.88356 l -7.93027,-40.60166 8.92711,-55.17492 -40.32984,-36.81326 -19.98379,13.32115 z" id="path78" name="Marais" class="region" fill="${getStateColor('path78')}" stroke="#ffffff" stroke-width="0.6" />
+  </g>
+  <g id="g89" name="southport">
+    <path d="m 348.54307,432.67023 -6.97736,11.73675 -13.11186,4.12378 h -3.38222 v 6.66109 h -6.34587 v 1.42731 h -14.90813 v 9.03976 h 5.39295 v 19.03243 l 10.78487,-0.3173 5.07618,1.26814 3.38222,4.12378 3.17242,2.22002 -3.17242,3.49023 -3.38222,4.52013 -6.02857,4.3615 -1.90324,2.85512 2.22053,3.80597 4.23023,-1.58595 8.03569,-4.12327 6.02651,-3.807 2.64324,-3.80648 4.03335,-5.55057 4.2137,-1.42782 h 6.97838 l 3.807,1.42782 2.5368,3.01325 h 3.48971 l 6.02651,-1.26969 5.03328,-5.70921 4.71858,-5.3914 h 5.1573 l 6.97839,7.61194 3.91139,6.02754 3.38377,5.07462 h 8.88111 l 7.2962,-1.50637 1.58543,-6.10712 v -5.39192 l 2.67632,-5.70869 -4.26175,-4.75837 -13.95729,-26.32862 -2.35128,-19.0314 z" id="path48" name="SouthportE" class="region" fill="${getStateColor('path48')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 336.33089,424.89913 -15.70085,14.75 h -16.81241 v 9.03976 7.93027 h 14.90917 v -1.42731 h 6.34483 v -6.66109 l 2.37763,0.15813 14.1149,-4.28294 6.97891,-11.73572 z" id="path49" name="SouthportC3" class="region" fill="${getStateColor('path49')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 276.38003,410.46642 -36.63601,20.93464 v 2.85512 h 50.43413 v 2.53783 h 13.63948 v 2.85512 h 16.81241 l 15.70085,-14.75 -21.88652,-14.43271 h -24.26622 z" id="path47" name="SouthportN" class="region" fill="${getStateColor('path47')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 282.2484,434.25618 v 9.19892 h 7.92975 v 4.60024 h 1.58544 v 2.53628 h 4.99607 v 8.08891 h -1.98179 v 2.69699 h 9.03976 v -17.92242 -6.66109 h -13.63948 v -2.53783 z" id="path53" name="SouthportC2" class="region" fill="${getStateColor('path53')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 239.74402,434.25618 5.07411,29.02407 8.08891,31.40325 3.80597,-2.85512 9.67538,-1.11053 2.22054,-0.79272 v -12.68759 l 1.4273,-1.26969 h 8.40517 l 2.3797,1.11052 1.4273,2.06241 0.23772,5.55057 h 1.82366 v -21.4111 h -5.86838 v -16.17731 l 0.63459,-1.11001 3.17241,-2.53783 v -9.19892 z" id="path50" name="SouthportW" class="region" fill="${getStateColor('path50')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 282.2484,443.4551 -3.17241,2.53783 -0.63459,1.11001 v 3.80597 12.37134 h 5.86838 v -4.59972 h 2.22053 v -7.77162 h 5.23431 v -2.85357 h -1.58647 v -4.60024 z" id="path52" name="SouthportC1" class="region" fill="${getStateColor('path52')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 296.7607,450.59162 -4.99608,0.31729 h -5.23431 v 7.77162 h -2.22053 v 26.01082 h 24.9008 v -19.03243 h -5.39295 v -4.2814 h -9.03976 v -2.69699 h 1.98283 z" id="path51" name="SouthportS" class="region" fill="${getStateColor('path51')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 257.82302,323.87015 -19.82411,8.08892 -9.67435,40.60165 11.41946,58.84034 36.63601,-20.93464 h 10.15028 27.91406 l 34.0987,22.20381 h 51.88985 l -3.25251,-26.32811 13.85083,-37.42924 -3.17138,-45.04273 H 288.5922 Z" id="path43" name="RoyalLakes" class="region" fill="${getStateColor('path43')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 97.478288,364.94723 -19.665983,3.49023 -3.119707,1.11001 -1.056266,3.01325 v 5.07566 l 2.087728,4.38681 4.889624,1.69189 4.442106,1.90324 c 0,0 1.268187,3.17228 1.47898,3.80701 0.21197,0.63355 -1.69137,4.01835 -1.69137,4.01835 0,0 -2.32581,1.69076 -2.960543,1.90273 -0.634723,0.2108 -3.805969,0 -3.805969,0 0,0 -2.11498,3.38363 -2.749703,4.01836 -0.634733,0.63357 -2.960543,3.80597 -2.960543,3.80597 0,0 -2.114637,2.3258 -2.325439,2.96054 -0.211961,0.63472 -1.48053,4.33514 -1.48053,4.33514 l -0.845426,4.9692 c 0,0 -0.846938,4.01775 -1.26969,4.86327 -0.422772,0.84669 -2.325869,4.75833 -2.53783,4.60024 -0.210801,-0.15928 -3.145544,2.59054 -3.145544,2.59054 H 46.779574 l -5.921086,-2.43241 -4.229716,-2.69596 h -6.131925 l -11.419458,-2.48512 -6.767546,-0.21084 -7.4016155,0.63355 c 0,0 -1.9027262,1.79775 -1.9027262,2.06241 v 2.69596 l 4.0178426,6.3438 h 5.0756591 c 0,0 3.805734,1.16291 4.652429,2.85512 0.845531,1.69223 4.2292,4.60024 4.2292,4.60024 0,0 6.131787,0.79282 6.766512,0 0.634732,-0.79401 7.401098,-2.06241 7.401098,-2.06241 l 5.498373,4.44056 4.13153,4.44107 1.156002,4.01784 -1.156002,4.94337 -2.016414,2.45773 -4.018359,-0.47542 -6.132959,-1.98231 h -3.330546 l -3.85868,2.45773 -3.172416,2.74867 -4.440556,1.53427 -3.594096,3.9641 -1.269689,3.38326 1.692403,4.70565 5.921085,1.63918 5.920569,3.91139 h 7.401616 v 3.91294 h 4.017842 l 2.960543,1.79731 -2.115116,2.43137 -3.172417,3.17242 -3.805969,5.49837 -3.595129,2.11357 -2.74867,-3.22358 -5.498372,1.95544 -5.921086,1.26814 H 9.5611735 l -2.749703,4.86482 -2.9605428,3.80596 -0.8454264,2.32596 c 0,0 0.6344414,2.11512 1.2691732,2.11512 0.6335511,0 1.6912244,0.84533 2.3259562,1.0573 0.6347319,0.2108 0.8454264,1.05781 0.8454264,1.05781 l 0.8469768,2.96003 1.0562662,2.32596 1.2691729,2.32595 1.268657,2.53783 0.84646,3.27784 1.480529,2.43241 1.056267,3.38325 -2.536796,4.6514 0.21084,4.44211 1.480013,3.59409 2.537829,2.32699 1.903243,2.96054 -1.26814,3.80597 c 0,0 0.633464,1.26842 0.845427,2.11512 0.21197,0.84551 1.057621,1.6906 2.115116,2.53731 l 1.0573,0.84595 0.422713,5.07514 8.669755,-10.57352 71.476254,-49.27244 30.24002,-18.60869 16.03571,24.74165 29.85244,-18.82056 3.38326,-18.76785 h 1.69189 v -22.87612 l 36.79465,-20.31607 19.56211,4.01784 v -2.85512 L 228.32456,372.56072 H 117.30395 l -3.80597,-3.17241 -8.08891,-0.95085 z" id="path42" name="LakeHanes" class="region" fill="${getStateColor('path42')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 132.42396,486.27729 -30.24002,18.60869 -71.476254,49.27244 -8.669755,10.57352 h 6.978386 l 5.709212,3.38325 1.692403,2.32596 -2.537829,4.22868 h 2.537829 l 4.651396,-2.74867 4.017842,2.74867 2.115117,2.74971 4.863786,-3.80597 3.805969,-1.26918 6.132959,-3.80648 c 0,0 1.269173,-2.11498 1.269173,-2.74971 v -5.92056 l 6.131925,-1.69137 h 6.766512 l 4.230233,1.69137 2.325956,4.8643 1.0573,4.44107 2.749703,4.6514 2.113566,3.59513 1.904277,3.38325 1.056266,4.65295 -0.845426,3.38325 2.537829,1.90325 h 3.80597 l 2.537829,-4.01836 v -9.51622 l 1.268136,-6.13192 2.74971,-6.3438 1.05781,-5.28753 v -5.07515 l 3.80597,-4.43952 2.32596,-2.11512 6.13296,-2.32699 6.97838,-1.69137 16.28273,-4.01784 8.0362,-2.53783 5.92109,3.27784 3.17138,-3.27784 2.32699,-3.59513 2.32544,-1.69085 z" id="path41" name="KepriPalms" class="region" fill="${getStateColor('path41')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 209.60943,486.27729 -13.11186,7.4011 h -11.41791 -10e-4 l -6.76652,-1.48001 -29.85244,18.82056 13.5692,20.93567 h 6.9789 l 1.90273,-1.26969 2.32595,-5.07411 2.74971,-3.59564 v -4.44056 l 3.80597,-6.55567 8.0362,-4.44108 15.86001,-4.01784 11.84217,-1.26814 -4.01836,-6.60838 1.48053,-2.48512 z" id="path46" name="SunnySandsW" class="region" fill="${getStateColor('path46')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 244.81813,463.28025 -18.29139,10.15028 v 4.59972 l -6.55567,2.96055 -4.44056,1.90324 -5.92108,3.38325 3.38325,5.92109 -1.48053,2.48512 4.01836,6.60838 11.20707,-3.59564 h 4.86482 l 2.5368,1.79782 4.44159,2.85512 2.53679,2.5368 h 2.11512 l 1.58543,-3.5941 3.91242,-3.59564 4.17649,-3.01274 -3.11867,-12.11037 z" id="path44" name="SunnySandsE" class="region" fill="${getStateColor('path44')}" stroke="#ffffff" stroke-width="0.6" />
+    <path d="m 220.18294,430.23834 -36.79568,20.31607 v 22.87612 h -1.69189 l -3.38326,18.76785 6.76755,1.48001 h 11.41791 l 19.03294,-10.78435 10.99623,-4.86379 v -4.59972 l 18.29139,-10.15028 -5.07411,-29.02407 z" id="path45" name="SunnySandsN" class="region" fill="${getStateColor('path45')}" stroke="#ffffff" stroke-width="0.6" />
+  </g>
+            </svg>
+            `;
+            
+            return svgCode;
+        }
+                
+        // Helper function to get state color based on winner
+        function getStateColor(stateId) {
+            const state = electionDatabase[stateId];
+            var top2 = Object
+            .entries(state.results)
+            .sort(({ 1: a }, { 1: b }) => b - a)
+            .slice(0, 2)
+            .map(([label, value]) => ({ label, value }));
+            console.log(top2);
+            console.log(state.winner);
+            console.log(hsvToHexDict(getPartyColor(state.winner, top2[0].value/100 - top2[1].value/100)));
+            return hsvToHexDict(getPartyColor(state.winner, top2[0].value/100 - top2[1].value/100));
+            return "#ccc"; // Default gray
+        }
+
+        // Update election summary
+        function updateElectionSummary() {
+            let socialistEV = 0;
+            let conservativeEV = 0;
+            let liberalEV = 0;
+            let othersEV = 0;
+            let demPV = 0;
+            let repPV = 0;
+            let indPV = 0;
+            let grnPV = 0;
+            
+            // Count electoral votes by party
+            for (const stateId in electionDatabase) {
+                const state = electionDatabase[stateId];
+                if (state.winner === "socialist") {
+                    socialistEV += state.electoralVotes;
+                    demPV += Math.floor(state.voters*state.results.socialist/100*state.turnout/100*state.reporting/100);
+            repPV += Math.floor(state.voters*state.results.conservative/100*state.turnout/100*state.reporting/100);
+            indPV += Math.floor(state.voters*state.results.liberal/100*state.turnout/100*state.reporting/100);
+            grnPV += Math.floor(state.voters*state.results.others/100*state.turnout/100*state.reporting/100);
+                } else if (state.winner === "conservative") {
+                    conservativeEV += state.electoralVotes;
+                    demPV += Math.floor(state.voters*state.results.socialist/100*state.turnout/100*state.reporting/100);
+            repPV += Math.floor(state.voters*state.results.conservative/100*state.turnout/100*state.reporting/100);
+            indPV += Math.floor(state.voters*state.results.liberal/100*state.turnout/100*state.reporting/100);
+            grnPV += Math.floor(state.voters*state.results.others/100*state.turnout/100*state.reporting/100);
+                } else if (state.winner === "liberal") {
+                    liberalEV += state.electoralVotes;
+                    demPV += Math.floor(state.voters*state.results.socialist/100*state.turnout/100*state.reporting/100);
+            repPV += Math.floor(state.voters*state.results.conservative/100*state.turnout/100*state.reporting/100);
+            indPV += Math.floor(state.voters*state.results.liberal/100*state.turnout/100*state.reporting/100);
+            grnPV += Math.floor(state.voters*state.results.others/100*state.turnout/100*state.reporting/100);
+                } else if (state.winner === "others") {
+                    othersEV += state.electoralVotes;
+                    demPV += Math.floor(state.voters*state.results.socialist/100*state.turnout/100*state.reporting/100);
+            repPV += Math.floor(state.voters*state.results.conservative/100*state.turnout/100*state.reporting/100);
+            indPV += Math.floor(state.voters*state.results.liberal/100*state.turnout/100*state.reporting/100);
+            grnPV += Math.floor(state.voters*state.results.others/100*state.turnout/100*state.reporting/100);
+                }
+            }
+
+            const totalEV = socialistEV + conservativeEV + liberalEV + othersEV;
+            const neededToWin = Math.floor(totalEV / 2) + 1;
+            const totalPV = demPV+repPV+indPV+grnPV;
+            
+            // Create summary display
+            const summaryHtml = `
+                <h2>Parliamentary Seats</h2>
+                <div class="legend">
+                    <div class="party-label">
+                        <span class="party-color" style="background-color: ${partyColors.socialist}"></span>
+                        <span>Socialist: ${socialistEV} seats</span>
+                    </div>
+                    <div class="party-label">
+                        <span class="party-color" style="background-color: ${partyColors.conservative}"></span>
+                        <span>Conservative: ${conservativeEV} seats</span>
+                    </div>
+                    <div class="party-label">
+                        <span class="party-color" style="background-color: ${partyColors.liberal}"></span>
+                        <span>Liberal: ${liberalEV} seats</span>
+                    </div>
+                    <div class="party-label">
+                        <span class="party-color" style="background-color: ${partyColors.others}"></span>
+                        <span>Others: ${othersEV} seats</span>
+                    </div>
+                </div>
+                <p><strong>${neededToWin} seats needed to win</strong></p>
+                <div class="candidate-bar">
+                    <div class="party-socialist" style="width: ${(socialistEV / totalEV) * 100}%;background-color: ${partyColors.socialist}"></div>
+                    <div class="party-conservative" style="width: ${(conservativeEV / totalEV) * 100}%;background-color: ${partyColors.conservative}"></div>
+                    <div class="party-liberal" style="width: ${(liberalEV / totalEV) * 100}%;background-color: ${partyColors.liberal}"></div>
+                    <div class="party-others" style="width: ${(othersEV / totalEV) * 100}%;background-color: ${partyColors.others}"></div>
+                </div>
+                <h2>Popular Vote Results</h2>
+                <div class="legend">
+                    <div class="party-label">
+                        <span class="party-color" style="background-color: ${partyColors.socialist}"></span>
+                        <span>Socialist: ${demPV} votes (${Math.round((demPV / totalPV) * 1000)/10}%)</span>
+                    </div>
+                    <div class="party-label">
+                        <span class="party-color" style="background-color: ${partyColors.conservative}"></span>
+                        <span>Conservative: ${repPV} votes (${Math.round((repPV / totalPV) * 1000)/10}%)</span>
+                    </div>
+                    <div class="party-label">
+                        <span class="party-color" style="background-color: ${partyColors.liberal}"></span>
+                        <span>Liberal: ${indPV} votes (${Math.round((indPV / totalPV) * 1000)/10}%)</span>
+                    </div>
+                    <div class="party-label">
+                        <span class="party-color" style="background-color: ${partyColors.others}"></span>
+                        <span>Others: ${grnPV} votes ( ${Math.round((grnPV / totalPV) * 1000)/10}%)</span>
+                    </div>
+                </div>
+                <div class="candidate-bar">
+                    <div class="party-socialist" style="width: ${(demPV / totalPV) * 100}%;background-color: ${partyColors.socialist}"></div>
+                    <div class="party-conservative" style="width: ${(repPV / totalPV) * 100}%;background-color: ${partyColors.conservative}"></div>
+                    <div class="party-liberal" style="width: ${(indPV / totalPV) * 100}%;background-color: ${partyColors.liberal}"></div>
+                    <div class="party-others" style="width: ${(grnPV / totalPV) * 100}%;background-color: ${partyColors.others}"></div>
+                </div>
+            `;
+            
+            document.getElementById('election-summary').innerHTML = summaryHtml;
+        }
+
+        // Initial render of SVG
+        document.getElementById('svg-container').innerHTML = generateElectionMap();
+        updateElectionSummary();
+
+        // Current selected state
+        let selectedState = null;
+
+        // Add event listeners to SVG elements
+        function attachEventListeners() {
+            const svgElements = document.querySelectorAll('.region');
+            
+            svgElements.forEach(element => {
+                // Add hover effect
+                element.addEventListener('mouseover', () => {
+                    element.setAttribute('opacity', '0.7');
+                });
+                
+                element.addEventListener('mouseout', () => {
+                    element.setAttribute('opacity', '1');
+                });
+                
+                // Connect to database on click
+                element.addEventListener('click', () => {
+                    const elementId = element.getAttribute('id');
+                    selectedState = elementId;
+                    displayStateData(elementId);
+                });
+            });
+        }
+
+        // Attach listeners after DOM loads
+        document.addEventListener('DOMContentLoaded', attachEventListeners);
+        
+        // We also need to reattach listeners after the SVG is regenerated
+        window.onload = attachEventListeners;
+
+        // Function to display data from the election database
+        function displayStateData(stateId) {
+            const state = electionDatabase[stateId];
+            
+            if (state) {
+                const infoPanel = document.getElementById('info-panel');
+                
+                // Calculate percentage strings
+                const demPercent = state.results.socialist.toFixed(1) + "%";
+                const repPercent = state.results.conservative.toFixed(1) + "%";
+                const indPercent = state.results.liberal.toFixed(1) + "%";
+                const othersPercent = state.results.others.toFixed(1) + "%";
+                
+                infoPanel.innerHTML = `
+                    <h2>${state.name} Election Results</h2>
+                    
+                    <div class="region-stats">
+                        <h3>Current Results</h3>
+                        <p><strong>Electoral Votes:</strong> ${state.electoralVotes}</p>
+                        <p><strong>Voters:</strong> ${state.voters}</p>
+                        <p><strong>Reporting:</strong> ${state.reporting}% of precincts</p>
+                        <p><strong>Voter Turnout:</strong> ${state.turnout}%</p>
+                        
+                        <div class="candidate-bar">
+                            <div class="party-socialist" style="width: ${state.results.socialist}%;background-color: ${partyColors.socialist}"></div>
+                            <div class="party-conservative" style="width: ${state.results.conservative}%;background-color: ${partyColors.conservative}"></div>
+                            <div class="party-liberal" style="width: ${state.results.liberal}%;background-color: ${partyColors.liberal}"></div>
+                            <div class="party-others" style="width: ${state.results.others}%;background-color: ${partyColors.others}"></div>
+                        </div>
+                        
+                        <div class="legend">
+                            <div class="party-label">
+                                <span class="party-color" style="background-color: ${partyColors.socialist}"></span>
+                                <span>Soc: ${Math.floor(state.results.socialist/100*state.turnout/100*state.reporting/100*state.voters)} votes, ${demPercent}</span>
+                            </div>
+                            <div class="party-label">
+                                <span class="party-color" style="background-color: ${partyColors.conservative}"></span>
+                                <span>Con: ${Math.floor(state.results.conservative/100*state.turnout/100*state.reporting/100*state.voters)} votes, ${repPercent}</span>
+                            </div>
+                        </div>
+                        <div class="legend">
+                            <div class="party-label">
+                                <span class="party-color" style="background-color: ${partyColors.liberal}"></span>
+                                <span>Lib: ${Math.floor(state.results.liberal/100*state.turnout/100*state.reporting/100*state.voters)} votes, ${indPercent}</span>
+                            </div>
+                            <div class="party-label">
+                                <span class="party-color" style="background-color: ${partyColors.others}"></span>
+                                <span>Others: ${Math.floor(state.results.others/100*state.turnout/100*state.reporting/100*state.voters)} votes, ${othersPercent}</span>
+                            </div>
+                        </div>
+                        
+                        <p><strong>Winner:</strong> ${state.winner.charAt(0).toUpperCase() + state.winner.slice(1)}</p>
+                        <p><strong>Last Updated:</strong> ${state.lastUpdated}</p>
+                    </div>
+                    
+                    <h3>Update Election Data</h3>
+                    <form id="update-form">
+                        <div class="form-group">
+                            <label for="state-name">State Name:</label>
+                            <input type="text" id="state-name" value="${state.name}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="electoral-votes">Electoral Votes:</label>
+                            <input type="number" id="electoral-votes" value="${state.electoralVotes}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="voters">Voters:</label>
+                            <input type="number" id="voters" value="${state.voters}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="dem-percent">Socialistic %:</label>
+                            <input type="number" id="dem-percent" min="0" max="100" step="0.1" value="${state.results.socialist}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="rep-percent">Conservative %:</label>
+                            <input type="number" id="rep-percent" min="0" max="100" step="0.1" value="${state.results.conservative}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="ind-percent">Liberal %:</label>
+                            <input type="number" id="ind-percent" min="0" max="100" step="0.1" value="${state.results.liberal}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="others-percent">Others %:</label>
+                            <input type="number" id="others-percent" min="0" max="100" step="0.1" value="${state.results.others}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="reporting">Reporting %:</label>
+                            <input type="number" id="reporting" min="0" max="100" step="0.1" value="${state.reporting}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="turnout">Voter Turnout %:</label>
+                            <input type="number" id="turnout" min="0" max="100" step="0.1" value="${state.turnout}">
+                        </div>
+                        
+                        <button type="button" onclick="updateStateData('${stateId}')">Save Changes</button>
+                    </form>
+                    <div id="status-message"></div>
+                `;
+            }
+        }
+
+        // Function to update the election database
+        function updateStateData(stateId) {
+            const newName = document.getElementById('state-name').value;
+            const newEV = parseInt(document.getElementById('electoral-votes').value);
+            const newVoters = parseInt(document.getElementById('voters').value);
+            const newDem = parseFloat(document.getElementById('dem-percent').value);
+            const newRep = parseFloat(document.getElementById('rep-percent').value);
+            const newInd = parseFloat(document.getElementById('ind-percent').value);
+            const newothers = parseFloat(document.getElementById('others-percent').value);
+            const newReporting = parseFloat(document.getElementById('reporting').value);
+            const newTurnout = parseFloat(document.getElementById('turnout').value);
+            
+            // Basic validation
+            if (!newName || isNaN(newEV) || newEV <= 0 ||
+                isNaN(newDem) || isNaN(newRep) || isNaN(newInd) || isNaN(newothers) ||
+                isNaN(newReporting) || isNaN(newTurnout)) {
+                document.getElementById('status-message').innerHTML = 
+                    `<div class="status-message" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;">
+                        Please fill all fields with valid values.
+                    </div>`;
+                return;
+            }
+            
+            // Check that percentages add up to approximately 100%
+            const totalPercent = newDem + newRep + newInd + newothers;
+            if (totalPercent < 99.5 || totalPercent > 100.5) {
+                document.getElementById('status-message').innerHTML = 
+                    `<div class="status-message" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;">
+                        Percentages must add up to 100%. Current total: ${totalPercent.toFixed(1)}%
+                    </div>`;
+                return;
+            }
+            
+            // Determine the winner
+            let winner = "socialist";
+            let maxPercent = newDem;
+            
+            if (newRep > maxPercent) {
+                winner = "conservative";
+                maxPercent = newRep;
+            }
+            if (newInd > maxPercent) {
+                winner = "liberal";
+                maxPercent = newInd;
+            }
+            if (newothers > maxPercent) {
+                winner = "others";
+            }
+            
+            // Update the database
+            electionDatabase[stateId] = {
+                name: newName,
+                electoralVotes: newEV,
+                voters: newVoters,
+                results: {
+                    socialist: newDem,
+                    conservative: newRep,
+                    liberal: newInd,
+                    others: newothers
+                },
+                winner: winner,
+                turnout: newTurnout,
+                reporting: newReporting,
+                lastUpdated: new Date().toLocaleDateString('en-US')
+            };
+            
+            // Show success message
+            document.getElementById('status-message').innerHTML = 
+                `<div class="status-message success">
+                    Election data for ${newName} has been updated successfully!
+                </div>`;
+                
+            // In a real application, you would send this update to your server
+            console.log(`Database updated for ${stateId}:`, electionDatabase[stateId]);
+            
+            // Regenerate the map and update summary
+            document.getElementById('svg-container').innerHTML = generateElectionMap();
+            updateElectionSummary();
+            
+            // Reattach event listeners
+            attachEventListeners();
+            
+            // Refresh the display after a short delay
+            setTimeout(() => {
+                displayStateData(stateId);
+            }, 1000);
+        }
+        // Upload new JSON election data
+document.getElementById("upload-json").addEventListener("change", function (event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        try {
+            const newData = JSON.parse(e.target.result);
+            electionDatabase = newData;
+            alert("Election database loaded successfully.");
+            generateElectionMap();
+            updateElectionSummary();
+        } catch (err) {
+            alert("Failed to load JSON: " + err.message);
+        }
+    };
+    reader.readAsText(file);
+});
+
+// Download current electionDatabase as a JSON file
+function downloadElectionDatabase() {
+    const dataStr = JSON.stringify(electionDatabase, null, 4);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "election_database.json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+    </script>
+</body>
+</html>
